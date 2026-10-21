@@ -1,0 +1,852 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="theme-color" content="#f8f9f5" />
+    <meta
+      name="description"
+      content="不用公式，用六幅大图和交互实验，读懂 Attention Is All You Need：从注意力机制到 Transformer。"
+    />
+    <title>注意力，就是你需要的全部。｜知微 · 论文图解</title>
+    <link rel="icon" href="assets/favicon.svg" type="image/svg+xml" />
+    <link rel="stylesheet" href="styles.css" />
+    <script src="app.js" defer></script>
+  </head>
+  <body>
+    <svg
+      class="icon-library"
+      xmlns="http://www.w3.org/2000/svg"
+      aria-hidden="true"
+    >
+      <symbol id="i-arrow" viewBox="0 0 24 24">
+        <path d="M4 12h15m-6-6 6 6-6 6" />
+      </symbol>
+      <symbol id="i-external" viewBox="0 0 24 24">
+        <path d="M7 17 17 7M7 7h10v10" />
+      </symbol>
+      <symbol id="i-book" viewBox="0 0 24 24">
+        <path
+          d="M12 5v15M3 4c4-1 6 0 9 2 3-2 5-3 9-2v14c-4-1-6 0-9 2-3-2-5-3-9-2Z"
+        />
+      </symbol>
+      <symbol id="i-spark" viewBox="0 0 24 24">
+        <path
+          d="m12 3 2.5 6.5L21 12l-6.5 2.5L12 21l-2.5-6.5L3 12l6.5-2.5ZM20 2v4m-2-2h4"
+        />
+      </symbol>
+      <symbol id="i-clock" viewBox="0 0 24 24">
+        <circle cx="12" cy="12" r="8" />
+        <path d="M12 7v5l3 2" />
+      </symbol>
+      <symbol id="i-check" viewBox="0 0 24 24">
+        <path d="m5 12 4 4L19 6" />
+      </symbol>
+      <symbol id="i-refresh" viewBox="0 0 24 24">
+        <path d="M20 10a8 8 0 1 0-1 7M20 4v6h-6" />
+      </symbol>
+      <symbol id="i-chevron" viewBox="0 0 24 24">
+        <path d="m8 5 7 7-7 7" />
+      </symbol>
+    </svg>
+    <a class="skip-link" href="#main">跳到正文</a>
+    <header class="site-header">
+      <a class="brand" href="#top" aria-label="知微，回到首页">
+        <span class="brand-mark"
+          ><svg viewBox="0 0 32 32" aria-hidden="true">
+            <path
+              d="M16 5C5 1 2 11 16 16 2 21 5 31 16 27 27 31 30 21 16 16 30 11 27 1 16 5Z"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="1.8"
+            />
+            <path d="M16 5v22" stroke="currentColor" stroke-width="1.5" /></svg
+        ></span>
+        <span class="brand-name"
+          >知微<span class="brand-en">PAPER, PLAINLY.</span></span
+        >
+      </a>
+      <span class="header-tagline">让好想法，被看懂。</span>
+      <nav class="header-nav" aria-label="主导航">
+        <a href="#top" class="header-link active"
+          ><span class="small-dot"></span>论文图解</a
+        >
+        <a href="#attention" class="header-link">动手试试</a>
+        <a
+          href="https://arxiv.org/pdf/1706.03762"
+          target="_blank"
+          rel="noopener noreferrer"
+          class="paper-link"
+          >阅读原论文 <svg class="icon"><use href="#i-external" /></svg
+        ></a>
+      </nav>
+      <button
+        class="mobile-menu"
+        aria-label="展开章节目录"
+        aria-expanded="false"
+        aria-controls="chapter-nav"
+      >
+        <span></span><span></span>
+      </button>
+      <div class="top-progress" aria-hidden="true">
+        <span id="top-progress-bar"></span>
+      </div>
+    </header>
+
+    <div class="page-shell" id="top">
+      <aside class="sidebar" id="chapter-nav">
+        <div class="sidebar-top">
+          <span class="eyebrow">一篇论文 · 六个瞬间</span
+          ><span class="outline-close">目录</span>
+        </div>
+        <nav class="chapter-list" aria-label="章节目录">
+          <a
+            href="#from-sequence"
+            class="chapter-link is-active"
+            aria-current="location"
+            ><span class="chapter-index">01</span><span>换一种读法</span
+            ><span class="nav-dot"></span
+          ></a>
+          <a href="#attention" class="chapter-link"
+            ><span class="chapter-index">02</span><span>什么是注意力</span
+            ><span class="nav-dot"></span
+          ></a>
+          <a href="#multihead" class="chapter-link"
+            ><span class="chapter-index">03</span><span>多几个视角</span
+            ><span class="nav-dot"></span
+          ></a>
+          <a href="#position" class="chapter-link"
+            ><span class="chapter-index">04</span><span>别忘了顺序</span
+            ><span class="nav-dot"></span
+          ></a>
+          <a href="#transformer" class="chapter-link"
+            ><span class="chapter-index">05</span><span>拼成 Transformer</span
+            ><span class="nav-dot"></span
+          ></a>
+          <a href="#impact" class="chapter-link"
+            ><span class="chapter-index">06</span><span>为什么它重要</span
+            ><span class="nav-dot"></span
+          ></a>
+        </nav>
+        <div class="reading-progress">
+          <div><span>阅读进度</span><span id="progress-value">0%</span></div>
+          <div class="progress-track"><span id="progress-fill"></span></div>
+        </div>
+        <div class="sidebar-note">
+          <svg class="icon"><use href="#i-spark" /></svg>
+          <p>带上好奇心。<br />把公式，先放一边。</p>
+          <span>MADE FOR CURIOUS MINDS</span>
+        </div>
+        <a class="sidebar-source" href="#source"
+          ><svg class="icon"><use href="#i-book" /></svg>关于这篇论文
+          <svg class="icon tiny"><use href="#i-external" /></svg
+        ></a>
+      </aside>
+
+      <main id="main" tabindex="-1">
+        <div class="article-topline">
+          <span
+            ><svg class="icon"><use href="#i-book" /></svg>
+            经典论文，视觉解读</span
+          ><span class="issue-number">VOL. 001 / ARTIFICIAL INTELLIGENCE</span>
+        </div>
+        <section class="hero" aria-labelledby="hero-title">
+          <div class="hero-copy">
+            <div class="hero-kicker">
+              <span class="small-dot"></span> 2017 · 一个改变 AI 的想法
+            </div>
+            <h1 id="hero-title">
+              注意力，<br />就是你需要的<br /><span class="title-highlight"
+                >全部。</span
+              ><svg class="title-spark" viewBox="0 0 45 45" aria-hidden="true">
+                <path d="m22 3 4 14 15 5-15 5-4 15-5-15-14-5 14-5Z" />
+              </svg>
+            </h1>
+            <p class="hero-english">Attention Is All You Need</p>
+            <p class="hero-description">
+              从一句话出发，看懂 Transformer。<br />不必懂数学，只需要一点好奇心。
+            </p>
+            <div class="hero-actions">
+              <a href="#from-sequence" class="button button-primary"
+                >开启视觉之旅 <svg class="icon"><use href="#i-arrow" /></svg></a
+              ><span class="reading-time"
+                ><svg class="icon"><use href="#i-clock" /></svg>约 8 分钟</span
+              >
+            </div>
+          </div>
+          <div class="hero-art">
+            <span class="art-note">词语的秘密，藏在联系里。</span
+            ><img
+              src="assets/attention-hero.svg"
+              alt="The cat sat on the mat：六张单词卡片通过连线，围绕着代表注意力的眼睛"
+              width="620"
+              height="480"
+              fetchpriority="high"
+            /><span class="art-label"
+              ><span class="small-dot"></span> A LITTLE ATTENTION GOES A LONG
+              WAY</span
+            >
+          </div>
+        </section>
+        <div class="intro-strip">
+          <span
+            ><span class="strip-symbol">↳</span> 给第一次听说 Transformer
+            的你</span
+          ><span
+            ><svg class="icon"><use href="#i-check" /></svg>大图解释</span
+          ><span
+            ><svg class="icon"><use href="#i-check" /></svg>动手理解</span
+          ><span
+            ><svg class="icon"><use href="#i-check" /></svg>零基础友好</span
+          >
+        </div>
+
+        <section class="chapter" id="from-sequence" aria-labelledby="title-01">
+          <div class="section-heading">
+            <div>
+              <span class="section-kicker">01 <span></span> THE BIG IDEA</span>
+              <h2 id="title-01">
+                不再挨个读，而是<span class="hand-underline">一起看。</span>
+              </h2>
+              <p>以前，词语排队传话。现在，每个词都能直接联系其他词。</p>
+            </div>
+            <span class="section-doodle" aria-hidden="true">↗</span>
+          </div>
+          <div class="comparison-grid">
+            <figure class="comparison-card old-way">
+              <figcaption>
+                <span class="figure-tag">过去 · 循环神经网络 RNN</span
+                ><span class="mini-status">一步，再一步</span>
+              </figcaption>
+              <svg
+                class="sequence-visual"
+                viewBox="0 0 440 235"
+                role="img"
+                aria-labelledby="sequence-title"
+              >
+                <title id="sequence-title">
+                  循环神经网络按顺序处理：我，然后爱，然后这，然后世界
+                </title>
+                <g class="diagram-lines">
+                  <path d="M75 118h49m57 0h49m57 0h49" />
+                  <path d="m116 113 8 5-8 5m106-10 8 5-8 5m106-10 8 5-8 5" />
+                </g>
+                <g class="diagram-box">
+                  <rect x="26" y="89" width="58" height="58" rx="12" />
+                  <rect x="132" y="89" width="58" height="58" rx="12" />
+                  <rect x="238" y="89" width="58" height="58" rx="12" />
+                  <rect x="344" y="89" width="68" height="58" rx="12" />
+                </g>
+                <g class="diagram-text" text-anchor="middle">
+                  <text x="55" y="125">我</text>
+                  <text x="161" y="125">爱</text>
+                  <text x="267" y="125">这</text>
+                  <text x="378" y="125">世界</text>
+                </g>
+                <g class="time-label" text-anchor="middle">
+                  <text x="55" y="177">第 1 步</text>
+                  <text x="161" y="177">第 2 步</text>
+                  <text x="267" y="177">第 3 步</text>
+                  <text x="378" y="177">第 4 步</text>
+                </g>
+                <path d="M55 65c83-37 234-37 323 0" class="faint-path" />
+                <text x="220" y="35" text-anchor="middle" class="svg-note">
+                  远处的信息，要走很长的路
+                </text>
+              </svg>
+              <div class="comparison-caption">
+                <span class="caption-symbol">→ → →</span
+                ><span>前一个读完，后一个才能开始</span>
+              </div>
+            </figure>
+            <figure class="comparison-card new-way">
+              <figcaption>
+                <span class="figure-tag">现在 · Transformer</span
+                ><span class="mini-status"
+                  ><span class="small-dot"></span>一起建立联系</span
+                >
+              </figcaption>
+              <svg
+                class="sequence-visual"
+                viewBox="0 0 440 235"
+                role="img"
+                aria-labelledby="parallel-title"
+              >
+                <title id="parallel-title">
+                  自注意力让四个词直接相连，同一层的词语表示可以并行计算
+                </title>
+                <g class="attention-web">
+                  <path
+                    d="M55 128C55 15 378 15 378 128M55 128C55 40 267 40 267 128M55 128C55 68 161 68 161 128M161 128C161 15 378 15 378 128M161 128C161 60 267 60 267 128M267 128C267 68 378 68 378 128"
+                  />
+                </g>
+                <path
+                  d="M55 128C55 15 378 15 378 128"
+                  class="strong-connection"
+                />
+                <g class="diagram-box">
+                  <rect x="26" y="112" width="58" height="58" rx="12" />
+                  <rect x="132" y="112" width="58" height="58" rx="12" />
+                  <rect x="238" y="112" width="58" height="58" rx="12" />
+                  <rect x="344" y="112" width="68" height="58" rx="12" />
+                </g>
+                <g class="diagram-text" text-anchor="middle">
+                  <text x="55" y="148">我</text>
+                  <text x="161" y="148">爱</text>
+                  <text x="267" y="148">这</text>
+                  <text x="378" y="148">世界</text>
+                </g>
+                <g class="node-dot">
+                  <circle cx="55" cy="112" r="4" />
+                  <circle cx="161" cy="112" r="4" />
+                  <circle cx="267" cy="112" r="4" />
+                  <circle cx="378" cy="112" r="4" />
+                </g>
+                <path
+                  d="M55 197h323m-323-5v10m323-10v10"
+                  class="diagram-bracket"
+                />
+                <text x="220" y="222" text-anchor="middle" class="svg-note">
+                  同一层，一起计算
+                </text>
+              </svg>
+              <div class="comparison-caption">
+                <svg class="icon"><use href="#i-spark" /></svg
+                ><span>不管离多远，都可以直接“对话”</span>
+              </div>
+            </figure>
+          </div>
+          <p class="figure-footnote">
+            <span class="note-dot"></span
+            >这里的“一起”指层内计算。生成新句子时，仍然一个词接一个词。
+          </p>
+        </section>
+
+        <section class="chapter" id="attention" aria-labelledby="title-02">
+          <div class="section-heading">
+            <div>
+              <span class="section-kicker"
+                >02 <span></span> SELF-ATTENTION</span
+              >
+              <h2 id="title-02">
+                理解一个词，先看它<span class="hand-underline">在关注谁。</span>
+              </h2>
+              <p>“它”是小猫，还是马路？上下文，让答案变得不同。</p>
+            </div>
+            <span class="interactive-badge"
+              ><span class="small-dot"></span>可以动手玩</span
+            >
+          </div>
+          <div class="attention-playground">
+            <div class="playground-toolbar">
+              <span class="playground-label"
+                ><svg class="icon"><use href="#i-spark" /></svg
+                >点一个词，看看它关注谁</span
+              >
+              <div
+                class="scenario-switch"
+                role="group"
+                aria-label="切换示例句子"
+              >
+                <button
+                  type="button"
+                  class="scenario-button is-active"
+                  data-scenario="tired"
+                  aria-pressed="true"
+                >
+                  小猫累了</button
+                ><button
+                  type="button"
+                  class="scenario-button"
+                  data-scenario="wide"
+                  aria-pressed="false"
+                >
+                  马路太宽
+                </button>
+              </div>
+            </div>
+            <p
+              class="attention-summary"
+              id="attention-summary"
+              aria-live="polite"
+            >
+              读到「<strong>它</strong>」，多看一眼「<em>小猫</em>」。
+            </p>
+            <div class="attention-diagram">
+              <svg
+                class="attention-arcs"
+                viewBox="0 0 700 210"
+                aria-hidden="true"
+              >
+                <g id="attention-paths"></g>
+              </svg>
+              <div
+                class="sentence-tokens"
+                aria-label="选择一个词，查看它关注的上下文"
+              >
+                <button
+                  class="token is-related"
+                  data-token="0"
+                  aria-pressed="false"
+                >
+                  <span class="token-word">小猫</span
+                  ><span class="weight-track"><span></span></span>
+                </button>
+                <button class="token" data-token="1" aria-pressed="false">
+                  <span class="token-word">没有</span
+                  ><span class="weight-track"><span></span></span>
+                </button>
+                <button class="token" data-token="2" aria-pressed="false">
+                  <span class="token-word">过</span
+                  ><span class="weight-track"><span></span></span>
+                </button>
+                <button class="token" data-token="3" aria-pressed="false">
+                  <span class="token-word">马路</span
+                  ><span class="weight-track"><span></span></span>
+                </button>
+                <button class="token" data-token="4" aria-pressed="false">
+                  <span class="token-word">因为</span
+                  ><span class="weight-track"><span></span></span>
+                </button>
+                <button
+                  class="token is-selected"
+                  data-token="5"
+                  aria-pressed="true"
+                >
+                  <span class="token-word">它</span
+                  ><span class="weight-track"><span></span></span>
+                </button>
+                <button class="token" data-token="6" aria-pressed="false">
+                  <span class="token-word">太累了</span
+                  ><span class="weight-track"><span></span></span>
+                </button>
+              </div>
+            </div>
+            <div class="playground-bottom">
+              <span><i class="legend-line"></i>连线越粗，关注越多</span
+              ><span class="demo-disclaimer">教学示意，非真实模型权重</span>
+            </div>
+          </div>
+          <div class="takeaway">
+            <span class="takeaway-label">一句话理解</span>
+            <p>
+              注意力，就是根据上下文，<strong
+                >给不同信息分配不同的分量。</strong
+              >
+            </p>
+          </div>
+          <details class="deeper-dive">
+            <summary>
+              <span
+                ><span class="small-plus">＋</span>好奇它怎么算？认识
+                Q、K、V</span
+              ><span class="optional-label">选读 · 不影响继续阅读</span>
+            </summary>
+            <div class="qkv-content">
+              <div class="qkv-grid">
+                <div>
+                  <span class="qkv-letter">Q</span>
+                  <h3>我在找什么？</h3>
+                  <p>Query · 当前词的“问题”</p>
+                </div>
+                <div>
+                  <span class="qkv-letter">K</span>
+                  <h3>谁和我匹配？</h3>
+                  <p>Key · 其他词的“线索”</p>
+                </div>
+                <div>
+                  <span class="qkv-letter">V</span>
+                  <h3>能给我什么信息？</h3>
+                  <p>Value · 词语携带的内容</p>
+                </div>
+              </div>
+              <p class="qkv-explanation">
+                Q 和 K 比一比，分数缩放后变成权重，再按权重混合
+                V。它们都是从词的向量学出来的，不是人工填写的问题。
+              </p>
+              <div
+                class="formula"
+                aria-label="Attention 等于 softmax，括号内 Q 乘 K 的转置除以 d k 的平方根，再乘 V"
+              >
+                Attention(Q, K, V) = softmax<span class="formula-bracket"
+                  >(</span
+                ><span class="fraction"
+                  ><span>QK<sup>T</sup></span
+                  ><span>√d<sub>k</sub></span></span
+                ><span class="formula-bracket">)</span>V
+              </div>
+            </div>
+          </details>
+        </section>
+
+        <section class="chapter" id="multihead" aria-labelledby="title-03">
+          <div class="section-heading">
+            <div>
+              <span class="section-kicker"
+                >03 <span></span> MULTI-HEAD ATTENTION</span
+              >
+              <h2 id="title-03">
+                一双眼睛不够？<span class="hand-underline">那就多几双。</span>
+              </h2>
+              <p>同一句话，从不同角度看，再把发现合在一起。</p>
+            </div>
+            <span class="small-paper-note">基础模型：8 个注意力头</span>
+          </div>
+          <figure class="multihead-figure">
+            <div class="head-cards">
+              <div class="head-card head-peach">
+                <span class="head-number">视角 01</span
+                ><svg class="head-eye" viewBox="0 0 160 100" aria-hidden="true">
+                  <path
+                    d="M12 50s27-33 68-33 68 33 68 33-27 33-68 33-68-33-68-33Z"
+                  />
+                  <circle cx="66" cy="50" r="23" />
+                  <circle class="eye-glint" cx="73" cy="43" r="5" />
+                  <path
+                    class="eye-lashes"
+                    d="m36 24-7-10M66 16 63 4m36 14 5-12"
+                  />
+                </svg>
+                <h3>谁，指向谁？</h3>
+                <div class="head-example">
+                  <span>小猫</span><i>↔</i><span>它</span>
+                </div>
+                <p>发现指代关系</p>
+              </div>
+              <div class="head-card head-green">
+                <span class="head-number">视角 02</span
+                ><svg class="head-eye" viewBox="0 0 160 100" aria-hidden="true">
+                  <path
+                    d="M12 50s27-33 68-33 68 33 68 33-27 33-68 33-68-33-68-33Z"
+                  />
+                  <circle cx="80" cy="50" r="23" />
+                  <circle class="eye-glint" cx="87" cy="43" r="5" />
+                  <path class="eye-lashes" d="m51 20-5-11M80 16V3m29 17 5-11" />
+                </svg>
+                <h3>谁，做了什么？</h3>
+                <div class="head-example">
+                  <span>小猫</span><i>↔</i><span>过</span>
+                </div>
+                <p>发现语法关系</p>
+              </div>
+              <div class="head-card head-lilac">
+                <span class="head-number">视角 03</span
+                ><svg class="head-eye" viewBox="0 0 160 100" aria-hidden="true">
+                  <path
+                    d="M12 50s27-33 68-33 68 33 68 33-27 33-68 33-68-33-68-33Z"
+                  />
+                  <circle cx="94" cy="50" r="23" />
+                  <circle class="eye-glint" cx="101" cy="43" r="5" />
+                  <path
+                    class="eye-lashes"
+                    d="m61 18-5-12m36 10 3-12m30 20 7-10"
+                  />
+                </svg>
+                <h3>什么，补充了什么？</h3>
+                <div class="head-example">
+                  <span>它</span><i>↔</i><span>太累了</span>
+                </div>
+                <p>发现描述关系</p>
+              </div>
+            </div>
+            <div class="head-merge" aria-hidden="true">
+              <span></span><span></span><span></span>
+            </div>
+            <figcaption class="merge-result">
+              <svg class="icon"><use href="#i-spark" /></svg
+              >拼接不同视角，再整合成更丰富的表示
+            </figcaption>
+          </figure>
+          <p class="figure-footnote">
+            <span class="note-dot"></span
+            >这是帮助理解的比喻。各个头的分工是学习出来的，不是预先指定的。
+          </p>
+        </section>
+
+        <section class="chapter" id="position" aria-labelledby="title-04">
+          <div class="section-heading">
+            <div>
+              <span class="section-kicker"
+                >04 <span></span> POSITIONAL ENCODING</span
+              >
+              <h2 id="title-04">
+                看见所有词，也要<span class="hand-underline"
+                  >记得它们的位置。</span
+                >
+              </h2>
+              <p>“我爱你”和“你爱我”——词一样，意思却不一样。</p>
+            </div>
+          </div>
+          <figure class="position-figure">
+            <div class="position-example">
+              <div class="position-caption">
+                <span class="figure-tag">给每个位置，一枚独特的“坐标”</span
+                ><button class="text-button" id="swap-order">
+                  <svg class="icon"><use href="#i-refresh" /></svg>交换顺序
+                </button>
+              </div>
+              <div class="position-words">
+                <div>
+                  <span class="position-word" id="position-first">我</span
+                  ><span class="position-index">位置 01</span>
+                </div>
+                <span class="position-plus">+</span>
+                <div>
+                  <span class="position-word">爱</span
+                  ><span class="position-index">位置 02</span>
+                </div>
+                <span class="position-plus">+</span>
+                <div>
+                  <span class="position-word" id="position-last">你</span
+                  ><span class="position-index">位置 03</span>
+                </div>
+              </div>
+              <svg
+                class="position-waves"
+                viewBox="0 0 800 110"
+                role="img"
+                aria-label="不同频率的正弦与余弦信号，组成位置编码"
+              >
+                <path
+                  d="M0 55C33 0 66 0 100 55S166 110 200 55 266 0 300 55 366 110 400 55 466 0 500 55 566 110 600 55 666 0 700 55 766 110 800 55"
+                />
+                <path
+                  d="M0 55C66 5 133 5 200 55S333 105 400 55 533 5 600 55 733 105 800 55"
+                />
+                <path d="M0 55C133 10 266 10 400 55S666 100 800 55" />
+              </svg>
+              <p
+                class="position-result"
+                id="position-result"
+                aria-live="polite"
+              >
+                词语带上位置，模型才能分清「谁爱谁」。
+              </p>
+            </div>
+            <figcaption>
+              <span class="word-chip">词的含义</span><span>＋</span
+              ><span class="position-chip">位置的信号</span><span>＝</span
+              ><strong>带着顺序的信息</strong>
+            </figcaption>
+          </figure>
+          <p class="figure-footnote">
+            <span class="note-dot"></span
+            >原论文把不同频率的正弦、余弦信号加到词向量上；上图仅作形状示意。
+          </p>
+        </section>
+
+        <section class="chapter" id="transformer" aria-labelledby="title-05">
+          <div class="section-heading">
+            <div>
+              <span class="section-kicker"
+                >05 <span></span> THE TRANSFORMER</span
+              >
+              <h2 id="title-05">
+                现在，把积木<span class="hand-underline">拼起来。</span>
+              </h2>
+              <p>一边读懂输入，一边参考输入，逐步写出新的句子。</p>
+            </div>
+          </div>
+          <div class="architecture-figure">
+            <div class="architecture-top">
+              <span>THE ORIGINAL TRANSFORMER</span
+              ><span>2017 · ENCODER–DECODER</span>
+            </div>
+            <div class="architecture-columns">
+              <div class="model-column">
+                <div class="model-heading">
+                  <span>01 / 读懂</span>
+                  <h3>编码器 <span>Encoder</span></h3>
+                </div>
+                <div class="model-input">The cat sat on the mat.</div>
+                <span class="vertical-arrow">↓</span>
+                <div class="embedding">词向量 + 位置编码</div>
+                <span class="vertical-arrow">↓</span>
+                <div class="model-stack encoder-stack">
+                  <span class="stack-repeat">重复 6 层</span>
+                  <div class="model-block self-attention">
+                    <span class="block-dot"></span>多头自注意力<small
+                      >让输入里的词互相联系</small
+                    >
+                  </div>
+                  <span class="vertical-arrow">↓</span>
+                  <div class="model-block feed-forward">
+                    <span class="block-dot"></span>前馈网络<small
+                      >逐个加工每个词的信息</small
+                    >
+                  </div>
+                </div>
+                <span class="vertical-arrow">↓</span>
+                <div class="model-output">带着上下文的表示</div>
+              </div>
+              <div class="cross-bridge">
+                <svg viewBox="0 0 88 560" aria-hidden="true">
+                  <path d="M0 455h44V355h42m-7-7 7 7-7 7" />
+                </svg>
+                <span>输入<br />信息</span>
+              </div>
+              <div class="model-column">
+                <div class="model-heading">
+                  <span>02 / 写出</span>
+                  <h3>解码器 <span>Decoder</span></h3>
+                </div>
+                <div class="model-input">已经生成的词</div>
+                <span class="vertical-arrow">↓</span>
+                <div class="embedding">词向量 + 位置编码</div>
+                <span class="vertical-arrow">↓</span>
+                <div class="model-stack decoder-stack">
+                  <span class="stack-repeat">重复 6 层</span>
+                  <div class="model-block masked-attention">
+                    <span class="block-dot"></span>带遮挡的自注意力<small
+                      >只能看已知的词，不偷看后文</small
+                    >
+                  </div>
+                  <span class="vertical-arrow">↓</span>
+                  <div class="model-block cross-attention">
+                    <span class="block-dot"></span>交叉注意力<small
+                      >回头看看编码器读懂了什么</small
+                    >
+                  </div>
+                  <span class="vertical-arrow">↓</span>
+                  <div class="model-block feed-forward">
+                    <span class="block-dot"></span>前馈网络
+                  </div>
+                </div>
+                <span class="vertical-arrow">↓</span>
+                <div class="model-output">
+                  预测下一个词的概率 <span>Linear + Softmax</span>
+                </div>
+              </div>
+            </div>
+            <div class="generation-demo">
+              <div class="generation-topline">
+                <span class="generation-label"
+                  ><span class="small-dot"></span>看看它怎么写</span
+                ><span class="generation-step" id="generation-step">0 / 6</span>
+              </div>
+              <div class="generation-row">
+                <div
+                  class="generated-sentence"
+                  id="generated-sentence"
+                  aria-live="polite"
+                >
+                  <span class="generation-placeholder"
+                    >从一个起始标记开始……</span
+                  >
+                </div>
+                <button class="button button-light" id="generate-next">
+                  生成下一个词 <svg class="icon"><use href="#i-arrow" /></svg>
+                </button>
+              </div>
+              <p>
+                固定翻译示例 · 生成时仍然逐步输出 · 图中省略残差连接与层归一化
+              </p>
+            </div>
+          </div>
+        </section>
+
+        <section class="chapter" id="impact" aria-labelledby="title-06">
+          <div class="section-heading">
+            <div>
+              <span class="section-kicker"
+                >06 <span></span> A NEW STARTING POINT</span
+              >
+              <h2 id="title-06">
+                少一些绕路，<span class="hand-underline">多一些可能。</span>
+              </h2>
+              <p>
+                不用循环与卷积，Transformer 在当时的机器翻译任务上刷新了成绩。
+              </p>
+            </div>
+          </div>
+          <div class="results-grid">
+            <div class="result-card">
+              <span class="result-label">英 → 德 · 翻译成绩</span
+              ><strong>28.4<span> BLEU</span></strong>
+              <p>WMT 2014，分数越高越好</p>
+              <span class="result-detail"
+                >当时优于论文列出的既有模型与集成</span
+              >
+            </div>
+            <div class="result-card">
+              <span class="result-label">大模型 · 训练时间</span
+              ><strong>3.5<span> 天</span></strong>
+              <p>使用 8 张 NVIDIA P100 GPU</p>
+              <span class="result-detail">论文中的训练设置，不是通用耗时</span>
+            </div>
+          </div>
+          <div class="idea-card">
+            <span class="idea-kicker"
+              ><svg class="icon"><use href="#i-spark" /></svg
+              >如果只记住一件事</span
+            >
+            <p>
+              理解，不是孤立地看每个词。<br />而是看见<span
+                >词与词之间的联系。</span
+              >
+            </p>
+            <div class="idea-footer">
+              <span>这，就是注意力的直觉。</span
+              ><span class="idea-star" aria-hidden="true">✳</span>
+            </div>
+          </div>
+          <div class="quick-check">
+            <div class="quiz-heading">
+              <span class="section-kicker">给好奇心，一个小回响</span>
+              <h3>“注意力”最接近下面哪一种做法？</h3>
+            </div>
+            <div class="quiz-options" role="group" aria-label="理解检查">
+              <button class="quiz-option" data-correct="false">
+                <span>A</span>把所有词逐个背下来</button
+              ><button class="quiz-option" data-correct="true">
+                <span>B</span>按上下文，给信息不同的权重</button
+              ><button class="quiz-option" data-correct="false">
+                <span>C</span>只看句子里的最后一个词
+              </button>
+            </div>
+            <p id="quiz-feedback" class="quiz-feedback" aria-live="polite">
+              选一个答案，看看你是否抓住了核心。
+            </p>
+          </div>
+        </section>
+
+        <footer class="article-footer" id="source">
+          <div class="source-block">
+            <span class="section-kicker">回到最初的那篇论文</span>
+            <h3>Attention Is All You Need</h3>
+            <p>Vaswani et al. · 2017 · NeurIPS</p>
+            <p class="source-note">
+              图解依据原论文 §3–6 与表 2 绘制。示意关系不等于实际模型解释。<br />“只需要注意力”是标题的强调；模型仍包含前馈网络、位置编码等组件。
+            </p>
+            <a
+              class="source-link"
+              href="https://arxiv.org/pdf/1706.03762"
+              target="_blank"
+              rel="noopener noreferrer"
+              >打开原论文 <span>arXiv:1706.03762</span
+              ><svg class="icon"><use href="#i-external" /></svg
+            ></a>
+          </div>
+          <div class="footer-bottom">
+            <a class="footer-brand" href="#top"
+              >知微<span>让好想法，被看懂。</span></a
+            ><span>少一点术语，多一点理解。</span><a href="#top">回到顶部 ↑</a>
+          </div>
+        </footer>
+      </main>
+    </div>
+    <button
+      class="back-to-top"
+      id="back-to-top"
+      aria-label="回到页面顶部"
+      hidden
+    >
+      ↑
+    </button>
+    <noscript
+      ><div class="noscript-message">
+        图解可以直接阅读；开启 JavaScript 后，还能体验词语关注、换序和逐词生成。
+      </div></noscript
+    >
+  </body>
+</html>

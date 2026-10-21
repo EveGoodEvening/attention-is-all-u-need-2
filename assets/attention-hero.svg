@@ -1,0 +1,67 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 620 480" fill="none" style="--fg:#274b3e;--muted:#98aa94;--border:#b7c7ad;--surface:#fafbf3;--accent:#dbeaa9;--c1:#efab8e;--c2:#d9dfcb;--c3:#e6e1ec;--success:#567a4a">
+  <title>注意力：让每个词看见彼此</title>
+  <desc>句子中的六个词像卡片一样围绕一只眼睛，通过不同粗细的连线联系起来，表示注意力对上下文的关注。</desc>
+  <g stroke="var(--border)" stroke-width="1">
+    <ellipse cx="311" cy="233" rx="251" ry="175" transform="rotate(-17 311 233)" stroke-dasharray="3 7"/>
+    <ellipse cx="311" cy="233" rx="204" ry="134" transform="rotate(23 311 233)"/>
+  </g>
+  <g stroke="var(--fg)" stroke-width="1.5" stroke-linecap="round">
+    <path d="M122 159C149 191 187 212 239 232"/>
+    <path d="M169 339C193 314 215 282 255 265"/>
+    <path d="M443 126C409 158 375 183 344 208"/>
+    <path d="M497 239C448 241 410 245 371 243" stroke-dasharray="4 6"/>
+    <path d="M444 366C416 325 384 290 349 270" stroke-width="3"/>
+    <path d="M277 90C278 133 289 171 302 205" stroke-dasharray="4 6"/>
+    <path d="m234 224 6 10-12-1M351 202l-10 7 0-11M354 273l-7-7 11 2"/>
+  </g>
+  <g transform="translate(63 104) rotate(-13 57 33)">
+    <rect x="4" y="6" width="112" height="68" rx="13" fill="var(--c2)" stroke="var(--fg)" stroke-width="1.5"/>
+    <rect width="112" height="68" rx="13" fill="var(--surface)" stroke="var(--fg)" stroke-width="1.5"/>
+    <text x="56" y="44" text-anchor="middle" font-family="Georgia,serif" font-size="29" fill="var(--fg)">The</text>
+  </g>
+  <g transform="translate(227 45) rotate(9 52 33)">
+    <rect x="4" y="6" width="106" height="68" rx="13" fill="var(--c2)" stroke="var(--fg)" stroke-width="1.5"/>
+    <rect width="106" height="68" rx="13" fill="var(--accent)" stroke="var(--fg)" stroke-width="1.5"/>
+    <text x="53" y="44" text-anchor="middle" font-family="Georgia,serif" font-size="29" fill="var(--fg)">cat</text>
+    <path d="M26 52c17 4 37 4 54 0" stroke="var(--success)" stroke-width="2" stroke-linecap="round"/>
+  </g>
+  <g transform="translate(408 97) rotate(13 51 31)">
+    <rect x="4" y="6" width="100" height="64" rx="13" fill="var(--c2)" stroke="var(--fg)" stroke-width="1.5"/>
+    <rect width="100" height="64" rx="13" fill="var(--surface)" stroke="var(--fg)" stroke-width="1.5"/>
+    <text x="50" y="42" text-anchor="middle" font-family="Georgia,serif" font-size="28" fill="var(--fg)">sat</text>
+  </g>
+  <g transform="translate(468 216) rotate(-8 43 29)">
+    <rect x="4" y="5" width="89" height="60" rx="12" fill="var(--c2)" stroke="var(--fg)" stroke-width="1.5"/>
+    <rect width="89" height="60" rx="12" fill="var(--c3)" stroke="var(--fg)" stroke-width="1.5"/>
+    <text x="44" y="39" text-anchor="middle" font-family="Georgia,serif" font-size="27" fill="var(--fg)">on</text>
+  </g>
+  <g transform="translate(109 316) rotate(8 51 31)">
+    <rect x="4" y="6" width="100" height="64" rx="13" fill="var(--c2)" stroke="var(--fg)" stroke-width="1.5"/>
+    <rect width="100" height="64" rx="13" fill="var(--surface)" stroke="var(--fg)" stroke-width="1.5"/>
+    <text x="50" y="42" text-anchor="middle" font-family="Georgia,serif" font-size="28" fill="var(--fg)">the</text>
+  </g>
+  <g transform="translate(395 335) rotate(-10 59 34)">
+    <rect x="4" y="6" width="118" height="70" rx="13" fill="var(--c2)" stroke="var(--fg)" stroke-width="1.5"/>
+    <rect width="118" height="70" rx="13" fill="var(--c1)" stroke="var(--fg)" stroke-width="1.5"/>
+    <text x="59" y="45" text-anchor="middle" font-family="Georgia,serif" font-size="29" fill="var(--fg)">mat.</text>
+  </g>
+  <g transform="rotate(-8 307 237)">
+    <rect x="221" y="176" width="176" height="146" rx="27" fill="var(--c2)" stroke="var(--fg)" stroke-width="1.7"/>
+    <rect x="210" y="163" width="176" height="146" rx="27" fill="var(--accent)" stroke="var(--fg)" stroke-width="1.7"/>
+    <path d="M237 233s24-32 61-32 61 32 61 32-24 32-61 32-61-32-61-32Z" fill="var(--surface)" stroke="var(--fg)" stroke-width="2"/>
+    <circle cx="298" cy="233" r="24" fill="var(--fg)"/>
+    <circle cx="306" cy="225" r="7" fill="var(--surface)"/>
+    <path d="M259 193l-6-9M281 186l-2-10M307 186l2-10M330 193l6-9" stroke="var(--fg)" stroke-width="2" stroke-linecap="round"/>
+    <text x="298" y="288" fill="var(--fg)" text-anchor="middle" font-size="11" letter-spacing="3" font-family="Arial,sans-serif">ATTENTION</text>
+  </g>
+  <g stroke="var(--fg)" stroke-width="1.7" stroke-linecap="round">
+    <path d="M365 50v18m-9-9h18M82 266v12m-6-6h12M547 333v14m-7-7h14"/>
+    <path d="m397 169 5-12 5 12 12 5-12 5-5 12-5-12-12-5Z" fill="var(--c1)"/>
+    <path d="m235 370 4-10 4 10 10 4-10 4-4 10-4-10-10-4Z" fill="var(--accent)"/>
+  </g>
+  <circle cx="161" cy="236" r="4" fill="var(--c1)"/>
+  <circle cx="467" cy="57" r="4" fill="var(--muted)"/>
+  <circle cx="352" cy="396" r="4" fill="var(--muted)"/>
+  <path d="M270 427c13 9 27 9 42 2" stroke="var(--fg)" stroke-width="1.4" stroke-linecap="round"/>
+  <text x="310" y="455" fill="var(--success)" text-anchor="middle" font-size="10" letter-spacing="2.4" font-family="Arial,sans-serif">IT’S ALL ABOUT CONNECTIONS.</text>
+</svg>
